@@ -7,14 +7,24 @@ var playerLists = [];
 var players = {
     "john": [["Grün", "Pistole"], []]
 }
-function select_me(type, elem) {
-    document.getElementById("cardProbsDiv").innerText = elem.innerText;
-    for (let index = 0; index < document.getElementsByClassName("selected").length; index++) {
-        const element = document.getElementsByClassName("selected")[index];
-        element.classList.remove("selected");
+
+//Game Data
+const rooms = ["Halle","Salon","Speisezimmer","Küche","Musikzimmer","Winterzimmer","Billiardzimmer","Bibliothek","Arbeitszimmer"]
+const weapons = ["Dolch","Leuchter","Pistole","Seil","Heizungsrohr","Rohrzange"]
+const suspects = ["Oberst von Gatow","Prof. Bloom","Reverend Grün","Baronin von Porz","Fräulein Gloria","Frau Weiss"]
+
+function select_me(type, elem, className) {
+    const otherLst = document.getElementsByClassName(className);
+    for (let index = 0; index < otherLst.length; index++) {
+        const element = otherLst[index];
+        if(element.classList.contains("selected")) {
+            element.classList.remove("selected");
+            break
+        }
     }
     elem.classList.add("selected")
     selection[parseInt(type)] = elem.innerText;
+    document.getElementById("cardProbsDiv").innerText = selection.toString();
 }
 
 function load_player_inps(num) {
@@ -30,8 +40,8 @@ function load_player_inps(num) {
         document.getElementById("setupDiv").append(centerDiv);
         var newElem = document.createElement("input");
         newElem.type = "text";
-        newElem.id = "namePl" + index.toString();
         newElem.classList.add("plInp");
+        newElem.id = "namePl" + index.toString();
         newElem.placeholder = "Player " + index.toString() + " Name";
         centerDiv.append(newElem);
         var nwElem = document.createElement("input");
@@ -63,8 +73,44 @@ function loadEverything() {
         const nwBtn = document.createElement("div");
         nwBtn.classList.add("normBtn");
         nwBtn.innerText = element;
-        nwBtn.onclick = function() {select_me(0, this)}
+        nwBtn.classList.add("selName");
+        nwBtn.onclick = function() {select_me(0, this, "selName")}
         document.getElementById("addMoveDiv").append(nwBtn);
     }
-    document.append(document.createElement("hr"))
+    document.getElementById("addMoveDiv").append(document.createElement("hr"))
+    for (let abc = 0; abc < rooms.length; abc++) {
+        const elm = rooms[abc];
+        const nwBt = document.createElement("div");
+        nwBt.onclick = function () {
+            select_me(2, this, "selRoom");
+        }
+        nwBt.classList.add("normBtn");
+        nwBt.innerText = elm;
+        nwBt.classList.add("selRoom");
+        document.getElementById("addMoveDiv").append(nwBt);
+    }
+    document.getElementById("addMoveDiv").append(document.createElement("hr"))
+    for (let abc = 0; abc < suspects.length; abc++) {
+        const elm = suspects[abc];
+        const nwBt = document.createElement("div");
+        nwBt.onclick = function () {
+            select_me(1, this, "selSus");
+        }
+        nwBt.classList.add("normBtn");
+        nwBt.innerText = elm;
+        nwBt.classList.add("selSus");
+        document.getElementById("addMoveDiv").append(nwBt);
+    }
+    document.getElementById("addMoveDiv").append(document.createElement("hr"))
+    for (let abc = 0; abc < weapons.length; abc++) {
+        const elm = weapons[abc];
+        const nwBt = document.createElement("div");
+        nwBt.onclick = function () {
+            select_me(3, this, "selWeap");
+        }
+        nwBt.classList.add("normBtn");
+        nwBt.innerText = elm;
+        nwBt.classList.add("selWeap");
+        document.getElementById("addMoveDiv").append(nwBt);
+    }
 }
