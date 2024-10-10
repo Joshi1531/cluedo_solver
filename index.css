@@ -64,5 +64,7 @@ body {
 
 .centerDiv {
     margin: auto;
-    width: max-content;
+    width: fit-content;
+    display: block;
+    text-align: center;
 }
