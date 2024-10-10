@@ -20,3 +20,49 @@ body {
     margin: auto;
     margin-top: 3vh !important;
 }
+
+.normBtn {
+    background-color: gray;
+    border-radius: 4px;
+    margin: 3vh;
+    width: max-content;
+    padding: 1vh;
+    font-size: xx-large;
+    color: black;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.selected {
+    background-color: lightgray;
+}
+
+.plInp {
+    width: 56%;
+    margin: 1vh;
+    font-size: 2.5vh;
+}
+
+.plCardInp {
+    width: 20%;
+    font-size: 2.5vh;
+}
+
+#namePl1 {
+    background-color: gray;
+}
+
+
+.specBtn {
+    display: block;
+    margin: auto;
+    width: 60%;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    font-size: 2vh;
+    padding: 0.9vh;
+}
+
+.centerDiv {
+    margin: auto;
+    width: max-content;
+}
