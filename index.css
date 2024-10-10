@@ -21,15 +21,21 @@ body {
     margin-top: 3vh !important;
 }
 
+#addMoveDiv {
+    padding: 1vh;
+    max-width: 96%;
+}
+
 .normBtn {
     background-color: gray;
     border-radius: 4px;
-    margin: 3vh;
+    margin: 1vh;
     width: max-content;
     padding: 1vh;
     font-size: xx-large;
     color: black;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    display: inline-block;
 }
 
 .selected {
