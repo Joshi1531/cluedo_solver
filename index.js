@@ -4,9 +4,10 @@ var playerNames = [];
 var playerNumOfCards = [];
 var selection = ["", "", "", ""]; // Plname, Person, Room, Weapon
 var playerLists = [];
-var players = {
-    "john": [["Grün", "Pistole"], []]
+var playerPossibles = {
+    "john": [["Grün", "Pistole"], []] //Spiele muss mind. einen von den Gegenständen in Klammer haben 
 }
+var playerShures = {}
 
 //Game Data
 const rooms = ["Halle","Salon","Speisezimmer","Küche","Musikzimmer","Winterzimmer","Billiardzimmer","Bibliothek","Arbeitszimmer"]
@@ -25,6 +26,18 @@ function select_me(type, elem, className) {
     elem.classList.add("selected")
     selection[parseInt(type)] = elem.innerText;
     document.getElementById("cardProbsDiv").innerText = selection.toString();
+}
+
+function select_card(elem) {
+    if(elem.classList.contains("selected")) {
+        elem.classList.remove("selected");
+        delete playerShures[playerNames[0]][playerShures[playerNames[0]].indexOf(elem.innerText)]
+    }
+    else {
+        elem.classList.add("selected")
+        playerShures[playerNames[0]].push(elem.innerText)
+    }
+    console.log(playerShures);
 }
 
 function load_player_inps(num) {
@@ -55,34 +68,46 @@ function load_player_inps(num) {
     //Submit Button
     const submBtn = document.createElement("button")
     submBtn.onclick = function () {
-        loadEverything();
+        loadEverything(0);
     }
     submBtn.innerText = "Submit + Start";
     submBtn.classList.add("specBtn");
     document.getElementById("setupDiv").append(submBtn);
 }
 
-function loadEverything() {
+function loadEverything(time) {
     //Data extraction
     for (let index = 0; index < numberOfPlayers; index++) {
         playerNames.push(document.getElementById("namePl" + (index + 1).toString()).value);
         playerNumOfCards.push(parseInt(document.getElementById("cardsPl" + (index + 1).toString()).value));
+        playerShures[playerNames[index]] = [];
+        playerPossibles[playerNames[index]] = [];
     }
-    for (let ind = 0; ind < playerNames.length; ind++) {
-        const element = playerNames[ind];
-        const nwBtn = document.createElement("div");
-        nwBtn.classList.add("normBtn");
-        nwBtn.innerText = element;
-        nwBtn.classList.add("selName");
-        nwBtn.onclick = function() {select_me(0, this, "selName")}
-        document.getElementById("addMoveDiv").append(nwBtn);
+    document.getElementById("setupDiv").style.display = "none";
+    if(time == 1) {
+        for (let ind = 0; ind < playerNames.length; ind++) {
+            const element = playerNames[ind];
+            const nwBtn = document.createElement("div");
+            nwBtn.classList.add("normBtn");
+            nwBtn.innerText = element;
+            nwBtn.classList.add("selName");
+            nwBtn.onclick = function() {select_me(0, this, "selName")}
+            document.getElementById("addMoveDiv").append(nwBtn);
+        }
     }
     document.getElementById("addMoveDiv").append(document.createElement("hr"))
     for (let abc = 0; abc < rooms.length; abc++) {
         const elm = rooms[abc];
         const nwBt = document.createElement("div");
-        nwBt.onclick = function () {
-            select_me(2, this, "selRoom");
+        if(time == 0) {
+            nwBt.onclick = function () {
+                select_card(this);
+            }
+        }
+        else {
+            nwBt.onclick = function () {
+                select_me(2, this, "selRoom");
+            }
         }
         nwBt.classList.add("normBtn");
         nwBt.innerText = elm;
@@ -93,8 +118,15 @@ function loadEverything() {
     for (let abc = 0; abc < suspects.length; abc++) {
         const elm = suspects[abc];
         const nwBt = document.createElement("div");
-        nwBt.onclick = function () {
-            select_me(1, this, "selSus");
+        if(time == 0) {
+            nwBt.onclick = function () {
+                select_card(this);
+            }
+        }
+        else {
+            nwBt.onclick = function () {
+                select_me(1, this, "selSus");
+            }
         }
         nwBt.classList.add("normBtn");
         nwBt.innerText = elm;
@@ -105,12 +137,40 @@ function loadEverything() {
     for (let abc = 0; abc < weapons.length; abc++) {
         const elm = weapons[abc];
         const nwBt = document.createElement("div");
-        nwBt.onclick = function () {
-            select_me(3, this, "selWeap");
+        if(time == 0) {
+            nwBt.onclick = function () {
+                select_card(this);
+            }
+        }
+        else {
+            nwBt.onclick = function () {
+                select_me(3, this, "selWeap");
+            }
         }
         nwBt.classList.add("normBtn");
         nwBt.innerText = elm;
         nwBt.classList.add("selWeap");
         document.getElementById("addMoveDiv").append(nwBt);
     }
+    document.getElementById("addMoveDiv").append(document.createElement("hr"))
+    if(time == 1) {
+        for (let ind = 0; ind < playerNames.length; ind++) {
+            const element = playerNames[ind];
+            const nwBtn = document.createElement("div");
+            nwBtn.classList.add("normBtn");
+            nwBtn.innerText = element;
+            nwBtn.classList.add("selResp");
+            nwBtn.onclick = function() {select_me(0, this, "selResp")}
+            document.getElementById("addMoveDiv").append(nwBtn);
+        }
+    }
+    //Submit Button
+    const submBtn = document.createElement("button")
+    submBtn.onclick = function () {
+        loadEverything();
+    }
+    submBtn.innerText = "Submit Move";
+    submBtn.classList.add("specBtn");
+    document.getElementById("addMoveDiv").append(submBtn);
+    document.getElementById("mainHead").innerText = "Select your Cards!"
 }
