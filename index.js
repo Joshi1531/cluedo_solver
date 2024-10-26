@@ -2,10 +2,11 @@
 var numberOfPlayers;
 var playerNames = [];
 var playerNumOfCards = [];
-var selection = ["", "", "", ""]; // Plname, Person, Room, Weapon
+var selection = ["", "", "", "", ""]; // Plname, Person, Room, Weapon, Respondant
 var playerLists = [];
+var gameLog = [] //Liste mit mehreren selections
 var playerPossibles = {
-    "john": [["Grün", "Pistole"], []] //Spiele muss mind. einen von den Gegenständen in Klammer haben 
+    //"john": [["Grün", "Pistole"], []] //Spieler muss mind. einen von den Gegenständen in Klammer haben 
 }
 var playerShures = {}
 
@@ -80,8 +81,10 @@ function loadEverything(time) {
     for (let index = 0; index < numberOfPlayers; index++) {
         playerNames.push(document.getElementById("namePl" + (index + 1).toString()).value);
         playerNumOfCards.push(parseInt(document.getElementById("cardsPl" + (index + 1).toString()).value));
-        playerShures[playerNames[index]] = [];
-        playerPossibles[playerNames[index]] = [];
+        if(time == 0) {
+            playerShures[playerNames[index]] = [];
+            playerPossibles[playerNames[index]] = [];
+        }
     }
     document.getElementById("setupDiv").style.display = "none";
     if(time == 1) {
@@ -160,17 +163,78 @@ function loadEverything(time) {
             nwBtn.classList.add("normBtn");
             nwBtn.innerText = element;
             nwBtn.classList.add("selResp");
-            nwBtn.onclick = function() {select_me(0, this, "selResp")}
+            nwBtn.onclick = function() {select_me(4, this, "selResp")}
             document.getElementById("addMoveDiv").append(nwBtn);
         }
+        const nwBtn = document.createElement("div");
+        nwBtn.classList.add("normBtn");
+        nwBtn.innerText = "Nobody responded";
+        nwBtn.classList.add("selResp");
+        nwBtn.onclick = function() {select_me(4, this, "selResp")}
+        document.getElementById("addMoveDiv").append(nwBtn);
     }
     //Submit Button
     const submBtn = document.createElement("button")
-    submBtn.onclick = function () {
-        loadEverything();
+    if(time == 0) {
+        submBtn.onclick = function () {
+            document.getElementById("addMoveDiv").innerHTML = "";
+            loadEverything(1)
+        }
     }
-    submBtn.innerText = "Submit Move";
+    else {
+        submBtn.onclick = function () {
+            log_results();
+            const selLst = document.getElementsByClassName("selected");
+            while(selLst.length > 0){
+                selLst[0].classList.remove('selected');
+            }            
+        }
+    }
+    submBtn.innerText = "Submit";
     submBtn.classList.add("specBtn");
     document.getElementById("addMoveDiv").append(submBtn);
-    document.getElementById("mainHead").innerText = "Select your Cards!"
+    if(time == 0) {
+        document.getElementById("mainHead").innerText = "Select your Cards"
+    }
+    else {
+        document.getElementById("mainHead").innerText = "Joshis Cluedo Solver"
+    }
+}
+
+function log_results() {
+    gameLog.push(selection);
+    analyze_game(gameLog)
+}
+
+function analyze_game(someGameLog) {
+    for (let imgb = 0; imgb < someGameLog.length; imgb++) {
+        const sel = someGameLog[imgb];
+        var respPossArr = []
+        // Main Loop through Log
+        for (let i = 1; i < sel.length - 1; i++) {
+            //If this player may have the card, add it to possibles
+            var foundShure = false;
+            console.log("Checking Card " + sel[i])
+            for (let ms = 0; ms < playerNames.length; ms++) {
+                const element = playerNames[ms];
+                if(playerShures[element].indexOf(sel[i]) != -1) {
+                    //Some Player has the possible Card. Continue
+                    foundShure = true;
+                    console.log("Someone has the Card " + sel[i] + ".")
+                    break
+                }
+            }
+            if(foundShure == false) {
+                //Respondant may have the card. Add it to temp Array.
+                respPossArr.push(sel[i])
+                console.log(respPossArr)
+            }
+        }
+        if(respPossArr.length != 0) {
+            //Add the array of possibles to the Respondant.
+            playerPossibles[sel[4]].push(respPossArr)
+        }
+    }
+    console.log(playerShures)
+    console.log(playerPossibles)
 }
